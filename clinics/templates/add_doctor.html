@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Doctors to {{ clinic.name }} - Bright Smile Dental Systems{% endblock %}
+
+{% block content %}
+{% load  clinic_filters %}
+<h1>Add Doctors to {{ clinic.name }}</h1>
+
+<div class="card">
+    <h2>Current Doctors</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Specialties</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in affiliations.all %}
+            <tr>
+                <td>{{ doctor.name }}</td>
+                <td>{{ doctor.specialties.all|join_names }}</td>
+                <td>
+                    <a href="{% url 'doctors_urls:update-doctor' doctor.id %}" class="btn btn-small">Edit</a>
+                    <form action="{% url 'clinics_urls:remove-doctor' clinic.id %}?dpk={{ doctor.id }}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-small btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No doctors affiliated with this clinic yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Add New Doctor</h2>
+    <form method="post" action="{% url 'clinics_urls:add-doctor' clinic.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="doctor">Select Doctor</label>
+            <select id="doctor" name="doctor" required>
+                <option value="">Choose a doctor</option>
+                {% for doctor in doctors.all %}
+                <option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.specialties.all|join_names }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn">Add Doctor to Clinic</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    input[type="text"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--light-gray);
+        border-radius: 4px;
+    }
+    .btn-small {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+    .btn-danger {
+        background-color: var(--accent-color);
+    }
+    .btn-danger:hover {
+        background-color: #ff5252;
+    }
+</style>
+{% endblock %}
