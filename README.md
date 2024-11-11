@@ -136,4 +136,4 @@ The project assumes:
 
 ---
 
-This README should provide clear instructions and insights for setting up, using, and understanding the project’s functionalities. Let me know if there’s anything more specific you'd like to include!  
+This README should provide clear instructions and insights for setting up, using, and understanding the project’s functionalities.
